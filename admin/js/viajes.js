@@ -188,6 +188,78 @@ function abrirViaje(codigo) {
   window.open(url, '_blank', 'noopener,noreferrer');
 }
 
+// ─── Código QR del portal público ────────────────────────────
+let _qrCodigo = '';
+let _qrUrl = '';
+
+function mostrarQR(codigo) {
+  const overlay = document.getElementById('qr-overlay');
+  const container = document.getElementById('qr-container');
+  const urlBox = document.getElementById('qr-url');
+
+  if (!overlay || !container || !urlBox) return;
+
+  _qrCodigo = codigo;
+  _qrUrl = generarLink(codigo);
+  container.innerHTML = '';
+  urlBox.textContent = _qrUrl;
+
+  if (typeof QRCode === 'undefined') {
+    container.textContent = 'No se pudo cargar el generador de QR. Recargá la página e intentá nuevamente.';
+  } else {
+    new QRCode(container, {
+      text: _qrUrl,
+      width: 240,
+      height: 240,
+      colorDark: '#0b3552',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.H
+    });
+  }
+
+  overlay.classList.add('active');
+  overlay.setAttribute('aria-hidden', 'false');
+}
+
+function cerrarQR() {
+  const overlay = document.getElementById('qr-overlay');
+  if (!overlay) return;
+  overlay.classList.remove('active');
+  overlay.setAttribute('aria-hidden', 'true');
+}
+
+function descargarQR() {
+  const container = document.getElementById('qr-container');
+  const canvas = container?.querySelector('canvas');
+  const img = container?.querySelector('img');
+
+  if (!canvas && !img) {
+    mostrarToast('Generá el código QR antes de descargarlo.', 'error');
+    return;
+  }
+
+  const enlace = document.createElement('a');
+  enlace.download = `viaja-sin-estres-${_qrCodigo || 'viaje'}-qr.png`;
+  enlace.href = canvas ? canvas.toDataURL('image/png') : img.src;
+  enlace.click();
+}
+
+async function copiarQRLink() {
+  if (!_qrUrl) return;
+  try {
+    await navigator.clipboard.writeText(_qrUrl);
+  } catch {
+    const tmp = Object.assign(document.createElement('textarea'), { value: _qrUrl });
+    Object.assign(tmp.style, { position: 'fixed', opacity: '0' });
+    document.body.appendChild(tmp);
+    tmp.focus();
+    tmp.select();
+    document.execCommand('copy');
+    tmp.remove();
+  }
+  mostrarToast('🔗 Enlace copiado', 'success');
+}
+
 async function copiarLink(codigo) {
   const url = generarLink(codigo);
 
@@ -569,6 +641,14 @@ function _renderFila(v) {
           onclick="abrirViaje('${_esc(v.codigo)}')"
         >
           👁️
+        </button>
+
+        <button
+          class="btn btn-ghost btn-sm"
+          title="Generar código QR"
+          onclick="mostrarQR('${_esc(v.codigo)}')"
+        >
+          ▦
         </button>
 
         <button
