@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b4f71">
+  <title>Dashboard — Viaja Sin Estrés</title>
+
+  <link rel="stylesheet" href="../shared/css/global.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="icon" href="../assets/favicon-viaja-sin-estres.svg" type="image/svg+xml">
+  <style>
+    /* Ajustes complementarios de responsividad para el dashboard */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .navbar-brand {
+      display: inline-flex;
+      align-items: center;
+      width: 165px;
+      height: 48px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .navbar-brand img {
+      display: block;
+      width: 165px !important;
+      height: 48px !important;
+      max-width: 165px !important;
+      object-fit: contain;
+    }
+
+    .navbar-right {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-width: 0;
+    }
+
+    .user-info #user-email {
+      overflow-wrap: anywhere;
+    }
+
+    .tabla-wrapper {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .modal-overlay,
+    .confirm-overlay {
+      padding: 1rem;
+    }
+
+    .modal {
+      width: min(100%, 720px);
+      max-height: min(90vh, 760px);
+      overflow: hidden;
+    }
+
+    .modal-body {
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .codigo-row {
+      display: flex;
+      align-items: stretch;
+      gap: 0.5rem;
+    }
+
+    .codigo-row input {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 700px) {
+      .navbar {
+        align-items: flex-start;
+      }
+
+      .navbar-right {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .user-info {
+        max-width: 70%;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+
+      .codigo-row {
+        flex-direction: column;
+      }
+
+      .codigo-row .btn {
+        width: 100%;
+      }
+
+      .modal-overlay,
+      .confirm-overlay {
+        padding: 0.5rem;
+      }
+
+      .modal {
+        max-height: 94vh;
+      }
+
+      .modal-footer {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+
+      .modal-footer .btn {
+        flex: 1;
+      }
+    }
+
+
+    /* Vista móvil del listado: cada viaje se transforma en una tarjeta */
+    @media (max-width: 700px) {
+      .tabla-wrapper {
+        overflow-x: visible;
+      }
+
+      .tabla-viajes,
+      .tabla-viajes thead,
+      .tabla-viajes tbody,
+      .tabla-viajes tr,
+      .tabla-viajes td {
+        display: block;
+        width: 100%;
+      }
+
+      .tabla-viajes thead {
+        display: none;
+      }
+
+      .tabla-viajes tbody {
+        padding: 0.75rem;
+      }
+
+      .tabla-viajes tr {
+        margin-bottom: 1rem;
+        padding: 1rem;
+        border: 1px solid #dce6ef;
+        border-radius: 14px;
+        background: #fff;
+        box-shadow: 0 8px 20px rgba(10, 45, 75, 0.06);
+      }
+
+      .tabla-viajes tr:last-child {
+        margin-bottom: 0;
+      }
+
+      .tabla-viajes td {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.65rem 0;
+        border: 0;
+        text-align: right;
+        overflow-wrap: anywhere;
+      }
+
+      .tabla-viajes td::before {
+        flex: 0 0 42%;
+        color: #54708a;
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-align: left;
+        text-transform: uppercase;
+      }
+
+      .tabla-viajes td:nth-child(1)::before { content: "Código"; }
+      .tabla-viajes td:nth-child(2)::before { content: "Viaje"; }
+      .tabla-viajes td:nth-child(3)::before { content: "Fechas"; }
+      .tabla-viajes td:nth-child(4)::before { content: "Estado"; }
+      .tabla-viajes td:nth-child(5)::before { content: "Acciones"; }
+
+      .tabla-viajes td:nth-child(2) {
+        display: block;
+        text-align: left;
+      }
+
+      .tabla-viajes td:nth-child(2)::before {
+        display: block;
+        margin-bottom: 0.35rem;
+      }
+
+      .tabla-viajes td:nth-child(5) {
+        align-items: center;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        padding-top: 1rem;
+        border-top: 1px solid #edf2f7;
+      }
+
+      .tabla-viajes td:nth-child(5)::before {
+        flex-basis: 100%;
+        margin-bottom: 0.35rem;
+      }
+
+      .tabla-viajes td:nth-child(5) button,
+      .tabla-viajes td:nth-child(5) a {
+        min-width: 42px;
+        min-height: 40px;
+      }
+
+      .tabla-viajes td:nth-child(4) {
+        align-items: center;
+      }
+
+      .tabla-viajes .col-fechas {
+        display: block;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- NAVBAR -->
+  <nav class="navbar" aria-label="Navegación principal">
+    <a class="navbar-brand" href="#" aria-label="Ir al inicio del dashboard">
+      <img
+        src="../assets/logo-viaja-sin-estres.png"
+        alt="Viaja Sin Estrés"
+      >
+    </a>
+
+    <div class="navbar-right">
+      <div class="user-info">
+        <div class="user-avatar" id="user-avatar" aria-hidden="true">M</div>
+        <span id="user-email"></span>
+      </div>
+
+      <button type="button" class="btn btn-ghost btn-sm" onclick="logout()">
+        Cerrar sesión
+      </button>
+    </div>
+  </nav>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h2>Viajes</h2>
+        <p>Gestioná el catálogo de viajes de la plataforma.</p>
+      </div>
+
+      <button type="button" class="btn btn-primary" onclick="abrirModalCrear()">
+        ＋&nbsp; Nuevo viaje
+      </button>
+    </div>
+
+    <!-- ESTADÍSTICAS -->
+    <section class="stats-grid" aria-label="Resumen de viajes">
+      <div class="stat-card">
+        <span class="stat-icon" aria-hidden="true">🗺️</span>
+        <div>
+          <div class="stat-value" id="stat-total">—</div>
+          <div class="stat-label">Total de viajes</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <span class="stat-icon" aria-hidden="true">✅</span>
+        <div>
+          <div class="stat-value" id="stat-activos">—</div>
+          <div class="stat-label">Activos</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <span class="stat-icon" aria-hidden="true">🔒</span>
+        <div>
+          <div class="stat-value" id="stat-inactivos">—</div>
+          <div class="stat-label">Inactivos</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LISTADO DE VIAJES -->
+    <section class="card" aria-labelledby="listado-titulo">
+      <div class="card-header">
+        <span class="card-title" id="listado-titulo">Listado de viajes</span>
+      </div>
+
+      <div id="loading-state" class="loading-state" aria-live="polite">
+        <div class="spinner" aria-hidden="true"></div>
+        <div>Cargando viajes…</div>
+      </div>
+
+      <div class="tabla-wrapper hidden">
+        <table class="tabla-viajes">
+          <thead>
+            <tr>
+              <th scope="col">Código</th>
+              <th scope="col">Título / Destino</th>
+              <th scope="col" class="col-fechas">Fechas</th>
+              <th scope="col">Estado</th>
+              <th scope="col">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-viajes"></tbody>
+        </table>
+      </div>
+
+      <div id="empty-state" class="empty-state hidden" aria-live="polite">
+        <span class="empty-icon" aria-hidden="true">🗺️</span>
+        <h3>No hay viajes todavía</h3>
+        <p>Creá el primer viaje para comenzar a gestionar la plataforma.</p>
+
+        <button type="button" class="btn btn-primary" onclick="abrirModalCrear()">
+          ＋&nbsp; Nuevo viaje
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL CREAR / EDITAR VIAJE -->
+  <div
+    id="modal-overlay"
+    class="modal-overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-titulo"
+    aria-hidden="true"
+  >
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modal-titulo">Nuevo viaje</h3>
+
+        <button
+          type="button"
+          class="modal-close"
+          onclick="cerrarModal()"
+          aria-label="Cerrar ventana"
+        >
+          ×
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <form id="form-viaje" novalidate>
+          <div class="form-group">
+            <label for="f-codigo">Código del viaje</label>
+
+            <div class="codigo-row">
+              <input
+                type="text"
+                id="f-codigo"
+                placeholder="BAR-8F42K"
+                maxlength="14"
+                autocomplete="off"
+                spellcheck="false"
+                style="text-transform: uppercase;"
+              >
+
+              <button
+                type="button"
+                id="btn-regen"
+                class="btn btn-ghost"
+                onclick="regenerarCodigo()"
+              >
+                ↻ Generar
+              </button>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="f-titulo">Título *</label>
+              <input
+                type="text"
+                id="f-titulo"
+                placeholder="Bariloche en grupo"
+                required
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="f-destino">Destino *</label>
+              <input
+                type="text"
+                id="f-destino"
+                placeholder="San Carlos de Bariloche"
+                required
+              >
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="f-fecha-inicio">Fecha inicio *</label>
+              <input type="date" id="f-fecha-inicio" required>
+            </div>
+
+            <div class="form-group">
+              <label for="f-fecha-fin">Fecha fin *</label>
+              <input type="date" id="f-fecha-fin" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="f-descripcion">Descripción</label>
+            <textarea
+              id="f-descripcion"
+              placeholder="Descripción general del viaje…"
+              rows="3"
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="f-info">Información importante</label>
+            <textarea
+              id="f-info"
+              placeholder="Datos clave que el viajero debe saber…"
+              rows="3"
+            ></textarea>
+          </div>
+
+          <div class="toggle-row">
+            <label class="toggle" for="f-activo">
+              <input type="checkbox" id="f-activo" checked>
+              <span class="toggle-slider" aria-hidden="true"></span>
+            </label>
+
+            <label for="f-activo">
+              Publicar viaje (visible para viajeros)
+            </label>
+          </div>
+
+          <div
+            id="f-error"
+            class="alert alert-error hidden"
+            style="margin-top: 1rem; margin-bottom: 0;"
+            role="alert"
+          ></div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" onclick="cerrarModal()">
+          Cancelar
+        </button>
+
+        <button
+          type="submit"
+          id="btn-guardar"
+          form="form-viaje"
+          class="btn btn-primary"
+        >
+          Crear viaje
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIÁLOGO DE CONFIRMACIÓN -->
+  <div
+    id="confirm-overlay"
+    class="confirm-overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="confirm-titulo"
+    aria-hidden="true"
+  >
+    <div class="confirm-box">
+      <span class="confirm-icon" aria-hidden="true">⚠️</span>
+      <h3 id="confirm-titulo">¿Estás seguro?</h3>
+      <p id="confirm-msg"></p>
+
+      <div class="confirm-actions">
+        <button type="button" class="btn btn-ghost" onclick="cerrarConfirm()">
+          Cancelar
+        </button>
+
+        <button type="button" class="btn btn-danger" onclick="ejecutarConfirm()">
+          Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTIFICACIONES -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- SCRIPTS: mantener este orden -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../shared/config.js"></script>
+  <script src="../shared/supabaseClient.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/viajes.js"></script>
+
+  <script>
+    // Inicializar el dashboard al cargar la página.
+    initDashboard();
+  </script>
+</body>
+</html>

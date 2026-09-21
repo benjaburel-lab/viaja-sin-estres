@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Viaja Sin Estrés | Organizá tu próximo viaje</title>
+  <meta name="description" content="Consultá tu itinerario, actividades, traslados, avisos y documentación desde un solo lugar con Viaja Sin Estrés.">
+  <link rel="stylesheet" href="shared/css/global.css">
+<link rel="icon" href="assets/favicon-viaja-sin-estres.svg" type="image/svg+xml">
+<style>
+  /* Ocultar los bordes defectuosos del logo */
+  .navbar .brand img,
+  .navbar .logo img,
+  .navbar img {
+   
+    background: transparent !important;
+    mix-blend-mode: normal !important;
+    filter: none !important;
+  }
+</style>
+<style>
+  html {
+    scroll-behavior: smooth;
+  }
+
+  section {
+    scroll-margin-top: 100px;
+  }
+
+  a,
+  button,
+  .button,
+  .service-card,
+  .step-card,
+  .benefit-card {
+    transition:
+      transform 0.3s ease,
+      background-color 0.3s ease,
+      color 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+
+  .button:hover,
+  button:hover {
+    transform: translateY(-3px);
+  }
+
+  .service-card:hover,
+  .step-card:hover,
+  .benefit-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 35px rgba(10, 45, 75, 0.12);
+  }
+
+  .hero-content,
+  .hero-card,
+  .service-card,
+  .step-card,
+  .benefit-card {
+    animation: aparecerSuave 0.8s ease both;
+  }
+
+  @keyframes aparecerSuave {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+</style>
+
+  <style>
+    :root {
+      --navy: #0b2941;
+      --blue: #123b5d;
+      --gold: #f2b84b;
+      --cream: #fff8e9;
+      --surface: #ffffff;
+      --background: #f5f8fb;
+      --text: #183247;
+      --muted: #66788a;
+      --border: #e3eaf0;
+      --shadow: 0 20px 60px rgba(11, 41, 65, .12);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    .skip-link {
+      position: absolute;
+      top: -60px;
+      left: 16px;
+      z-index: 200;
+      padding: 10px 15px;
+      border-radius: 10px;
+      background: var(--gold);
+      color: var(--navy);
+      font-weight: 800;
+    }
+
+    .skip-link:focus { top: 12px; }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--background);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+
+    .container {
+      width: min(1160px, 92%);
+      margin: 0 auto;
+    }
+
+    .section { padding: 92px 0; }
+
+    .section-heading {
+      max-width: 720px;
+      margin: 0 auto 46px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 13px;
+      color: var(--blue);
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .section-heading h2 {
+      margin-bottom: 15px;
+      color: var(--navy);
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.12;
+      letter-spacing: -.04em;
+    }
+
+    .section-heading p {
+      color: var(--muted);
+      font-size: 1.02rem;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 50px;
+      padding: 13px 23px;
+      border: 0;
+      border-radius: 999px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform .2s ease, background .2s ease, box-shadow .2s ease;
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+    }
+
+    .button-primary {
+      background: var(--gold);
+      color: #263342;
+      box-shadow: 0 10px 25px rgba(242, 184, 75, .25);
+    }
+
+    .button-primary:hover { background: #f6c96b; }
+
+    .button-light {
+      background: #fff;
+      color: var(--blue);
+    }
+
+    .button-outline {
+      border: 1px solid rgba(255,255,255,.45);
+      background: transparent;
+      color: #fff;
+    }
+
+    .button-outline:hover { background: rgba(255,255,255,.1); }
+
+    /* Navegación */
+    .navbar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 100;
+      border-bottom: none;
+      background: transparent;
+      backdrop-filter: none;
+    }
+
+    .navbar-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      min-height: 78px;
+    }
+
+    .brand-logo {
+      display: block;
+      width: 190px;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+      color: var(--muted);
+      font-size: .94rem;
+      font-weight: 700;
+    }
+
+    .nav-links a { transition: color .2s ease; }
+    .nav-links a:hover { color: var(--blue); }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .menu-toggle {
+      display: none;
+      width: 44px;
+      height: 44px;
+      padding: 9px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .menu-toggle span {
+      display: block;
+      width: 100%;
+      height: 2px;
+      margin: 5px 0;
+      border-radius: 3px;
+      background: var(--navy);
+    }
+
+    /* Hero */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      color: #fff;
+      background:
+        linear-gradient(105deg, rgba(7,31,49,.98) 0%, rgba(11,41,65,.9) 48%, rgba(11,41,65,.48) 100%),
+        url("https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1800&q=85")
+        center/cover no-repeat;
+    }
+
+    .hero::before {
+      position: absolute;
+      right: -180px;
+      bottom: -300px;
+      width: 680px;
+      height: 680px;
+      border: 100px solid rgba(242,184,75,.09);
+      border-radius: 50%;
+      content: "";
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1.08fr .92fr;
+      align-items: center;
+      gap: 70px;
+      min-height: 650px;
+      padding: 92px 0 115px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 22px;
+      padding: 8px 14px;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 999px;
+      background: rgba(255,255,255,.09);
+      color: #f8d88e;
+      font-size: .82rem;
+      font-weight: 800;
+    }
+
+    .hero h1 {
+      max-width: 700px;
+      margin-bottom: 23px;
+      font-size: clamp(2.65rem, 5.5vw, 5rem);
+      line-height: 1.02;
+      letter-spacing: -.06em;
+    }
+
+    .hero h1 span { color: var(--gold); }
+
+    .hero-description {
+      max-width: 590px;
+      margin-bottom: 31px;
+      color: rgba(255,255,255,.82);
+      font-size: 1.1rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .hero-panel {
+      padding: 34px;
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 30px;
+      background: rgba(255,255,255,.11);
+      box-shadow: 0 25px 70px rgba(0,0,0,.18);
+      backdrop-filter: blur(15px);
+    }
+
+    .panel-icon {
+      display: grid;
+      width: 66px;
+      height: 66px;
+      margin-bottom: 24px;
+      place-items: center;
+      border-radius: 20px;
+      background: var(--gold);
+      color: var(--navy);
+      font-size: 2rem;
+    }
+
+    .hero-panel h2 {
+      margin-bottom: 13px;
+      font-size: 1.75rem;
+      line-height: 1.18;
+    }
+
+    .hero-panel p {
+      margin-bottom: 25px;
+      color: rgba(255,255,255,.77);
+    }
+
+    .mini-features {
+      display: grid;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .mini-feature {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: rgba(255,255,255,.9);
+      font-size: .94rem;
+    }
+
+    .mini-feature span {
+      color: var(--gold);
+      font-weight: 900;
+    }
+
+    /* Acceso */
+    .access-box {
+      position: relative;
+      z-index: 2;
+      max-width: 900px;
+      margin: -48px auto 0;
+      padding: 32px;
+      border: 1px solid var(--border);
+      border-radius: 25px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .access-box h2 {
+      margin-bottom: 8px;
+      color: var(--navy);
+      font-size: 1.55rem;
+    }
+
+    .access-box p {
+      margin-bottom: 21px;
+      color: var(--muted);
+    }
+
+    .access-form {
+      display: flex;
+      gap: 12px;
+    }
+
+    .access-form input {
+      min-width: 0;
+      flex: 1;
+      padding: 15px 17px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      outline: none;
+      background: #f8fafc;
+      color: var(--text);
+      text-transform: uppercase;
+    }
+
+    .access-form input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(18,59,93,.1);
+    }
+
+    .access-message {
+      min-height: 23px;
+      margin-top: 12px;
+      color: #b42318;
+      font-size: .9rem;
+    }
+
+    /* Servicios */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 23px;
+    }
+
+    .service-card {
+      padding: 31px;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: #fff;
+      box-shadow: 0 8px 25px rgba(18,59,93,.04);
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    .service-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow);
+    }
+
+    .service-icon {
+      display: grid;
+      width: 60px;
+      height: 60px;
+      margin-bottom: 23px;
+      place-items: center;
+      border-radius: 18px;
+      background: var(--cream);
+      font-size: 1.75rem;
+    }
+
+    .service-card h3 {
+      margin-bottom: 10px;
+      color: var(--navy);
+      font-size: 1.22rem;
+    }
+
+    .service-card p {
+      color: var(--muted);
+      font-size: .96rem;
+    }
+
+    /* Pasos */
+    .steps-section { background: #fff; }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+    }
+
+    .step {
+      padding: 31px;
+      border-radius: 22px;
+      background: var(--background);
+    }
+
+    .step-number {
+      display: grid;
+      width: 48px;
+      height: 48px;
+      margin-bottom: 22px;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--blue);
+      color: #fff;
+      font-weight: 900;
+    }
+
+    .step h3 {
+      margin-bottom: 10px;
+      color: var(--navy);
+    }
+
+    .step p {
+      color: var(--muted);
+      font-size: .96rem;
+    }
+
+    /* Beneficios */
+    .benefits-content {
+      display: grid;
+      grid-template-columns: .95fr 1.05fr;
+      align-items: center;
+      gap: 75px;
+    }
+
+    .benefits-visual {
+      position: relative;
+      min-height: 430px;
+      overflow: hidden;
+      border-radius: 32px;
+      background:
+        linear-gradient(145deg, rgba(11,41,65,.12), rgba(11,41,65,.35)),
+        url("https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1100&q=85")
+        center/cover no-repeat;
+      box-shadow: var(--shadow);
+    }
+
+    .visual-badge {
+      position: absolute;
+      right: 22px;
+      bottom: 22px;
+      max-width: 230px;
+      padding: 18px;
+      border: 1px solid rgba(255,255,255,.35);
+      border-radius: 18px;
+      background: rgba(255,255,255,.9);
+      color: var(--navy);
+      box-shadow: 0 15px 35px rgba(0,0,0,.15);
+    }
+
+    .visual-badge strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 1.05rem;
+    }
+
+    .visual-badge span { font-size: .88rem; }
+
+    .benefits-copy .eyebrow { margin-bottom: 12px; }
+
+    .benefits-copy h2 {
+      margin-bottom: 16px;
+      color: var(--navy);
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.12;
+      letter-spacing: -.04em;
+    }
+
+    .benefits-copy > p { color: var(--muted); }
+
+    .benefits-list {
+      display: grid;
+      gap: 20px;
+      margin-top: 28px;
+    }
+
+    .benefit {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .benefit-check {
+      display: grid;
+      flex-shrink: 0;
+      width: 29px;
+      height: 29px;
+      place-items: center;
+      border-radius: 50%;
+      background: #e4f5e9;
+      color: #18733a;
+      font-weight: 900;
+    }
+
+    .benefit strong {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--navy);
+    }
+
+    .benefit p {
+      color: var(--muted);
+      font-size: .94rem;
+    }
+
+    /* CTA y footer */
+    .cta {
+      padding: 75px 0;
+      background: var(--blue);
+      color: #fff;
+    }
+
+    .cta-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 35px;
+    }
+
+    .cta h2 {
+      margin-bottom: 11px;
+      font-size: clamp(1.9rem, 4vw, 2.8rem);
+      line-height: 1.12;
+    }
+
+    .cta p {
+      max-width: 630px;
+      color: rgba(255,255,255,.76);
+    }
+
+    .footer {
+      padding: 31px 0;
+      background: var(--navy);
+      color: rgba(255,255,255,.7);
+    }
+
+    .footer-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .footer-brand {
+      color: #fff;
+      font-weight: 900;
+    }
+
+    .footer small { font-size: .85rem; }
+
+    @media (max-width: 900px) {
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 78px;
+        left: 0;
+        right: 0;
+        padding: 18px 4%;
+        border-bottom: none;
+        background: #123b56;
+        box-shadow: 0 18px 35px rgba(11, 41, 65, .18);
+      }
+
+      .nav-links.is-open {
+        display: grid;
+        gap: 14px;
+      }
+
+      .menu-toggle { display: block; }
+
+      .hero-content {
+        grid-template-columns: 1fr;
+        gap: 38px;
+        min-height: auto;
+        padding: 70px 0 105px;
+      }
+
+      .hero-panel { max-width: 560px; }
+
+      .services-grid,
+      .steps-grid { grid-template-columns: 1fr; }
+
+      .benefits-content {
+        grid-template-columns: 1fr;
+        gap: 38px;
+      }
+
+      .benefits-visual { min-height: 330px; }
+
+      .cta-content {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .section { padding: 65px 0; }
+
+      .brand-logo { width: 155px; }
+
+      .nav-trip-button {
+        min-height: 44px;
+        padding: 10px 17px;
+      }
+
+      .hero h1 { font-size: 2.85rem; }
+
+      .hero-actions,
+      .hero-actions .button { width: 100%; }
+
+      .access-box {
+        width: 92%;
+        margin-top: -35px;
+        padding: 24px;
+      }
+
+      .access-form { flex-direction: column; }
+      .access-form .button { width: 100%; }
+
+      .service-card,
+      .step { padding: 26px; }
+
+      .footer-content {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+
+  <!-- Ajustes finales del header -->
+  <style>
+    .navbar {
+      background: transparent !important;
+      border-bottom: none !important;
+      box-shadow: none !important;
+      backdrop-filter: none !important;
+    }
+
+    .navbar .nav-links a {
+      color: #ffffff;
+    }
+
+    .navbar .nav-links a:hover {
+      color: var(--gold);
+    }
+
+    .navbar .nav-trip-button {
+      background: var(--gold);
+      color: var(--navy);
+      border: none;
+    }
+
+    .navbar .menu-toggle {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.35);
+    }
+
+    .navbar .menu-toggle span {
+      background: #ffffff;
+    }
+
+    @media (max-width: 900px) {
+      .navbar .nav-links {
+        background: #123b56;
+        border-bottom: none;
+      }
+    }
+  </style>
+  <style>
+  /* Mostrar el logo completo */
+  .navbar img {
+    display: block !important;
+    width: auto !important;
+    height: auto !important;
+    max-width: 180px !important;
+    max-height: 70px !important;
+    clip-path: none !important;
+    object-fit: contain !important;
+    mix-blend-mode: normal !important;
+    filter: none !important;
+  }
+
+  /* Contenedor del logo sin recortes */
+  .navbar .brand,
+  .navbar .logo,
+  .navbar a:first-child {
+    overflow: visible !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+</style>
+<style>
+  /* Restaurar el botón "Mi viaje" */
+  .navbar a.button,
+  .navbar a.button-primary,
+  .navbar .nav-trip-button {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    background: #F8B83E !important;
+    color: #123B56 !important;
+    border: 2px solid #F8B83E !important;
+    border-radius: 999px !important;
+    padding: 14px 26px !important;
+    text-decoration: none !important;
+    font-weight: 800 !important;
+    box-shadow: 0 8px 20px rgba(248, 184, 62, 0.25) !important;
+  }
+
+  .navbar a.button:hover,
+  .navbar a.button-primary:hover,
+  .navbar .nav-trip-button:hover {
+    background: #FFD477 !important;
+    border-color: #FFD477 !important;
+    color: #123B56 !important;
+    transform: translateY(-2px);
+  }
+</style>
+</head>
+
+<body>
+  <a class="skip-link" href="#contenido-principal">Saltar al contenido principal</a>
+
+  <header class="navbar">
+    <div class="container navbar-content">
+      <a href="#" aria-label="Viaja Sin Estrés - Inicio">
+        <img class="brand-logo" src="assets/logo-viaja-sin-estres.png" alt="Viaja Sin Estrés">
+      </a>
+
+      <nav class="nav-links" id="mainNav" aria-label="Navegación principal">
+        <a href="#servicios">Servicios</a>
+        <a href="#como-funciona">Cómo funciona</a>
+        <a href="#beneficios">Beneficios</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a class="button button-primary nav-trip-button" href="#acceso">Mi viaje</a>
+        <button class="menu-toggle" id="menuToggle" type="button"
+                aria-label="Abrir menú" aria-controls="mainNav" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="contenido-principal">
+    <section class="hero">
+      <div class="container hero-content">
+        <div>
+          <span class="hero-badge">✦ Tu viaje, más simple</span>
+
+          <h1>
+            Viajá tranquilo.<br>
+            <span>Disfrutá cada momento.</span>
+          </h1>
+
+          <p class="hero-description">
+            En Viaja Sin Estrés centralizamos la información de tu viaje
+            para que tengas todo a mano y puedas disfrutar sin preocuparte
+            por los detalles.
+          </p>
+
+          <div class="hero-actions">
+            <a class="button button-primary" href="#acceso">Consultar mi viaje →</a>
+            <a class="button button-outline" href="#servicios">Conocé nuestros servicios</a>
+          </div>
+        </div>
+
+        <div class="hero-panel">
+          <div class="panel-icon">🧳</div>
+          <h2>Todo lo que necesitás, en un solo lugar</h2>
+          <p>
+            Accedé a tu itinerario, actividades, traslados, avisos
+            importantes y documentación desde cualquier dispositivo.
+          </p>
+          <a class="button button-light" href="#acceso">Acceder al portal</a>
+
+          <div class="mini-features">
+            <div class="mini-feature"><span>✓</span> Información clara y ordenada</div>
+            <div class="mini-feature"><span>✓</span> Acceso desde tu celular</div>
+            <div class="mini-feature"><span>✓</span> Actualizaciones importantes</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="container" id="acceso">
+      <div class="access-box">
+        <h2>¿Ya tenés tu código de viaje?</h2>
+        <p>Ingresá el código que te compartimos para consultar toda la información de tu viaje.</p>
+
+        <form class="access-form" id="accessForm">
+          <input
+            type="text"
+            id="tripCode"
+            placeholder="Ejemplo: BAR-8F42K"
+            autocomplete="off"
+            required
+          >
+          <button class="button button-primary" type="submit">Ver mi viaje →</button>
+        </form>
+
+        <div class="access-message" id="accessMessage" role="alert" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="section" id="servicios">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow">Nuestros servicios</span>
+          <h2>Organizamos los detalles para que vos disfrutes</h2>
+          <p>Te acompañamos con información clara y herramientas simples durante toda tu experiencia.</p>
+        </div>
+
+        <div class="services-grid">
+          <article class="service-card">
+            <div class="service-icon">🗺️</div>
+            <h3>Itinerarios organizados</h3>
+            <p>Consultá las actividades de tu viaje, sus horarios, lugares y detalles importantes.</p>
+          </article>
+
+          <article class="service-card">
+            <div class="service-icon">🚐</div>
+            <h3>Traslados coordinados</h3>
+            <p>Tené a mano la información de tus traslados, recorridos, fechas y horarios.</p>
+          </article>
+
+          <article class="service-card">
+            <div class="service-icon">📁</div>
+            <h3>Documentación disponible</h3>
+            <p>Accedé a los archivos y documentos importantes de tu viaje desde cualquier dispositivo.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section steps-section" id="como-funciona">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow">Cómo funciona</span>
+          <h2>Tu viaje, en tres simples pasos</h2>
+          <p>Todo está pensado para que encuentres la información que necesitás de forma rápida y sencilla.</p>
+        </div>
+
+        <div class="steps-grid">
+          <article class="step">
+            <div class="step-number">1</div>
+            <h3>Recibí tu código</h3>
+            <p>Te compartimos un código o enlace personalizado para acceder a la información de tu viaje.</p>
+          </article>
+
+          <article class="step">
+            <div class="step-number">2</div>
+            <h3>Ingresá al portal</h3>
+            <p>Abrí el enlace desde tu celular, computadora o escaneá el código QR que te enviamos.</p>
+          </article>
+
+          <article class="step">
+            <div class="step-number">3</div>
+            <h3>Disfrutá sin estrés</h3>
+            <p>Consultá actividades, traslados, avisos y documentos importantes cuando los necesites.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="beneficios">
+      <div class="container benefits-content">
+        <div class="benefits-visual" aria-label="Paisaje de montaña">
+          <div class="visual-badge">
+            <strong>Tu información, siempre a mano</strong>
+            <span>Antes y durante cada etapa del viaje.</span>
+          </div>
+        </div>
+
+        <div class="benefits-copy">
+          <span class="eyebrow">Una mejor experiencia</span>
+          <h2>Menos preocupaciones.<br>Más momentos para disfrutar.</h2>
+          <p>
+            Centralizamos la información más importante para que tengas
+            todo a tu alcance antes y durante el viaje.
+          </p>
+
+          <div class="benefits-list">
+            <div class="benefit">
+              <span class="benefit-check">✓</span>
+              <div>
+                <strong>Información clara y ordenada</strong>
+                <p>Encontrá cada detalle de tu viaje en un solo lugar.</p>
+              </div>
+            </div>
+
+            <div class="benefit">
+              <span class="benefit-check">✓</span>
+              <div>
+                <strong>Acceso desde cualquier dispositivo</strong>
+                <p>Usá el portal desde tu celular, tablet o computadora.</p>
+              </div>
+            </div>
+
+            <div class="benefit">
+              <span class="benefit-check">✓</span>
+              <div>
+                <strong>Actualizaciones importantes</strong>
+                <p>Consultá los avisos y cambios relacionados con tu viaje.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta" id="contacto">
+      <div class="container cta-content">
+        <div>
+          <h2>¿Tenés alguna consulta?</h2>
+          <p>Estamos para ayudarte. Comunicate con nosotros y empezá a organizar tu próximo viaje.</p>
+        </div>
+
+        <a
+  class="button button-primary"
+  href="https://api.whatsapp.com/send?phone=5493462377104&text=Hola%2C%20quisiera%20realizar%20una%20consulta%20sobre%20los%20servicios%20de%20Viaja%20Sin%20Estr%C3%A9s.%20%C2%BFPodr%C3%ADan%20ayudarme%3F"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  Contactar por WhatsApp
+</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-brand">Viaja Sin Estrés</div>
+      <small>© <span id="currentYear"></span> Viaja Sin Estrés. Todos los derechos reservados.</small>
+    </div>
+  </footer>
+
+  <script>
+    const accessForm = document.getElementById("accessForm");
+    const tripCodeInput = document.getElementById("tripCode");
+    const accessMessage = document.getElementById("accessMessage");
+
+    accessForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const code = tripCodeInput.value.trim().toUpperCase();
+
+      if (!code) {
+        accessMessage.textContent = "Ingresá un código de viaje.";
+        return;
+      }
+
+      accessMessage.textContent = "";
+      window.location.href = "viaje/?c=" + encodeURIComponent(code);
+    });
+
+    document.getElementById("currentYear").textContent = new Date().getFullYear();
+
+    const menuToggle = document.getElementById("menuToggle");
+    const mainNav = document.getElementById("mainNav");
+
+    menuToggle.addEventListener("click", function () {
+      const isOpen = mainNav.classList.toggle("is-open");
+      menuToggle.setAttribute("aria-expanded", String(isOpen));
+      menuToggle.setAttribute("aria-label", isOpen ? "Cerrar menú" : "Abrir menú");
+    });
+
+    mainNav.querySelectorAll("a").forEach(function (link) {
+      link.addEventListener("click", function () {
+        mainNav.classList.remove("is-open");
+        menuToggle.setAttribute("aria-expanded", "false");
+        menuToggle.setAttribute("aria-label", "Abrir menú");
+      });
+    });
+  </script>
+</body>
+</html>

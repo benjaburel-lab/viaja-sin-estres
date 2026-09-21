@@ -1,0 +1,2181 @@
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Gestionar viaje — Viaja Sin Estrés</title>
+
+  <link rel="stylesheet" href="../shared/css/global.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="icon" href="../assets/favicon-viaja-sin-estres.svg" type="image/svg+xml">
+
+  <style>
+    .editor-section {
+      margin-top: 1.5rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: .4rem;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    .form-group label {
+      font-weight: 600;
+      font-size: .9rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: .7rem;
+      border: 1px solid #d7dce5;
+      border-radius: 8px;
+      font: inherit;
+    }
+
+    .form-group textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: .7rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .item {
+      border: 1px solid #dce2eb;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-top: 1rem;
+      background: #fff;
+    }
+
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .item h4 {
+      margin: 0 0 .5rem;
+    }
+
+    .item-meta {
+      color: #687386;
+      font-size: .9rem;
+      margin-bottom: .7rem;
+    }
+
+    .item-description {
+      white-space: pre-wrap;
+      margin-top: .8rem;
+    }
+
+    .item-actions {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+    }
+
+    .empty-state {
+      padding: 1rem;
+      text-align: center;
+      color: #687386;
+    }
+
+    .status-message {
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 650px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-group.full {
+        grid-column: auto;
+      }
+
+      .item-header {
+        flex-direction: column;
+      }
+    }
+
+    .file-upload-box {
+      border: 1px dashed #b8c2d1;
+      border-radius: 10px;
+      padding: 1rem;
+      background: #f8fafc;
+    }
+
+    .file-list {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .file-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      border: 1px solid #dce2eb;
+      border-radius: 10px;
+      padding: 1rem;
+      background: #fff;
+    }
+
+    .file-info {
+      min-width: 0;
+    }
+
+    .file-name {
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+
+    .file-meta {
+      color: #687386;
+      font-size: .85rem;
+      margin-top: .3rem;
+    }
+
+    .file-preview {
+      width: 72px;
+      height: 72px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid #dce2eb;
+      flex-shrink: 0;
+    }
+
+    .file-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 650px) {
+      .file-card {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .file-actions {
+        width: 100%;
+      }
+    }
+
+
+
+    /* ===== Mejoras visuales y de usabilidad ===== */
+    :root {
+      --vse-primary: #087fc1;
+      --vse-primary-dark: #075985;
+      --vse-accent: #12b5cb;
+      --vse-ink: #07345b;
+      --vse-muted: #64748b;
+      --vse-border: #dbe5ef;
+      --vse-soft: #f6faff;
+    }
+
+    body {
+      background: linear-gradient(180deg, #f7fbff 0%, #eef5fb 100%);
+    }
+
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 3px 18px rgba(7, 52, 91, .08);
+      backdrop-filter: blur(12px);
+    }
+
+    .navbar-brand {
+      gap: .65rem;
+      font-weight: 800;
+      letter-spacing: -.02em;
+    }
+
+    .brand-emoji {
+      display: grid;
+      place-items: center;
+      width: 2.15rem;
+      height: 2.15rem;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #e0f6ff, #d9fff7);
+      box-shadow: 0 5px 14px rgba(8, 127, 193, .12);
+    }
+
+    .main {
+      max-width: 1120px;
+      margin-inline: auto;
+      padding: 2.25rem 1.25rem 4rem;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .page-header h2 {
+      margin-bottom: .45rem;
+      letter-spacing: -.035em;
+    }
+
+    #viaje-info {
+      color: var(--vse-muted);
+      font-size: .98rem;
+    }
+
+    #estado {
+      border-radius: 14px;
+      box-shadow: 0 5px 18px rgba(7, 52, 91, .05);
+    }
+
+    .editor-section {
+      overflow: hidden;
+      border: 1px solid var(--vse-border);
+      border-radius: 18px;
+      box-shadow: 0 10px 28px rgba(7, 52, 91, .055);
+      scroll-margin-top: 92px;
+    }
+
+    .editor-section .card-header {
+      background: linear-gradient(135deg, #ffffff, #f5fbff);
+      border-bottom: 1px solid var(--vse-border);
+      padding: 1.15rem 1.4rem;
+    }
+
+    .editor-section .card-title {
+      color: var(--vse-ink);
+      font-size: 1.05rem;
+      font-weight: 800;
+    }
+
+    .editor-section > div:not(.card-header) {
+      background: rgba(255,255,255,.92);
+    }
+
+    .form-group label {
+      color: #123b5d;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      min-height: 44px;
+      border-color: #cdddeb;
+      background: #fff;
+      transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+    }
+
+    .form-group textarea {
+      min-height: 118px;
+      line-height: 1.55;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--vse-primary);
+      box-shadow: 0 0 0 4px rgba(8, 127, 193, .12);
+    }
+
+    .form-actions {
+      align-items: center;
+    }
+
+    .btn {
+      border-radius: 10px;
+      transition: transform .2s ease, box-shadow .2s ease, background-color .2s ease;
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(7, 52, 91, .12);
+    }
+
+    .btn:disabled {
+      cursor: wait;
+      opacity: .7;
+    }
+
+    .item {
+      border-color: var(--vse-border);
+      border-radius: 14px;
+      box-shadow: 0 5px 16px rgba(7, 52, 91, .035);
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+
+    .item:hover {
+      transform: translateY(-2px);
+      border-color: #b8d7e9;
+      box-shadow: 0 10px 22px rgba(7, 52, 91, .08);
+    }
+
+    .item h4 {
+      color: var(--vse-ink);
+      line-height: 1.4;
+    }
+
+    .item-meta,
+    .file-meta {
+      color: var(--vse-muted);
+    }
+
+    .empty-state {
+      padding: 2rem 1rem;
+      border: 1px dashed #cbdbea;
+      border-radius: 12px;
+      background: var(--vse-soft);
+    }
+
+    .file-upload-box {
+      border-color: #b9d3e6;
+      background: linear-gradient(135deg, #f8fcff, #f2faff);
+      border-radius: 14px;
+    }
+
+    .file-card {
+      border-color: var(--vse-border);
+      border-radius: 14px;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .file-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgba(7, 52, 91, .07);
+    }
+
+    .file-preview {
+      background: #f4f8fc;
+    }
+
+    .section-jump {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .55rem;
+      margin: 0 0 1.25rem;
+      padding: .75rem;
+      border: 1px solid var(--vse-border);
+      border-radius: 14px;
+      background: rgba(255,255,255,.88);
+      box-shadow: 0 6px 18px rgba(7, 52, 91, .04);
+    }
+
+    .section-jump a {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      padding: .55rem .75rem;
+      border-radius: 9px;
+      color: var(--vse-ink);
+      background: #f2f8fc;
+      text-decoration: none;
+      font-size: .88rem;
+      font-weight: 700;
+      transition: background-color .2s ease, transform .2s ease;
+    }
+
+    .section-jump a:hover {
+      background: #dff3fb;
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 700px) {
+      .main {
+        padding: 1.25rem .75rem 3rem;
+      }
+
+      .page-header {
+        align-items: flex-start;
+      }
+
+      .page-header h2 {
+        font-size: 1.65rem;
+      }
+
+      .editor-section .card-header {
+        padding: 1rem;
+      }
+
+      .editor-section > div:not(.card-header) {
+        padding: 1rem !important;
+      }
+
+      .section-jump {
+        position: sticky;
+        top: 66px;
+        z-index: 20;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding: .55rem;
+      }
+
+      .section-jump a {
+        flex: 0 0 auto;
+        white-space: nowrap;
+      }
+
+      .file-card {
+        padding: .85rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <nav class="navbar">
+
+    <a class="navbar-brand" href="dashboard.html">
+      <span class="brand-emoji">✈️</span>
+      <span class="brand-label">Viaja Sin Estrés</span>
+    </a>
+
+    <div class="navbar-right">
+      <button class="btn btn-ghost btn-sm" onclick="volverAlDashboard()">
+        ← Volver
+      </button>
+
+      <button class="btn btn-ghost btn-sm" onclick="logout()">
+        Cerrar sesión
+      </button>
+    </div>
+
+  </nav>
+
+
+  <main class="main">
+
+    <div class="page-header">
+      <div>
+        <h2>Gestionar contenido del viaje</h2>
+        <p id="viaje-info">Cargando viaje...</p>
+      </div>
+    </div>
+
+    <div id="estado" class="alert alert-info">
+      Preparando editor...
+    </div>
+
+    <nav class="section-jump" aria-label="Navegación rápida del editor">
+      <a href="#seccion-actividades">📅 Itinerario</a>
+      <a href="#seccion-traslados">🚐 Traslados</a>
+      <a href="#seccion-avisos">📢 Avisos</a>
+      <a href="#seccion-archivos">📎 Archivos</a>
+    </nav>
+
+
+    <!-- ================================================= -->
+    <!-- ACTIVIDADES -->
+    <!-- ================================================= -->
+
+    <section class="card editor-section" id="seccion-actividades">
+
+      <div class="card-header">
+        <span class="card-title">📅 Itinerario del viaje</span>
+      </div>
+
+      <div style="padding: 1.5rem;">
+
+        <p>
+          Agregá las actividades que los viajeros podrán consultar desde su portal.
+        </p>
+
+        <form id="actividad-form">
+
+          <input type="hidden" id="actividad-id">
+
+          <div class="form-grid">
+
+            <div class="form-group">
+              <label for="actividad-dia">Día del viaje</label>
+              <input type="number" id="actividad-dia" min="1" required>
+            </div>
+
+            <div class="form-group">
+              <label for="actividad-fecha">Fecha</label>
+              <input type="date" id="actividad-fecha">
+            </div>
+
+            <div class="form-group">
+              <label for="actividad-hora">Hora</label>
+              <input type="time" id="actividad-hora">
+            </div>
+
+            <div class="form-group">
+              <label for="actividad-orden">Orden</label>
+              <input type="number" id="actividad-orden" min="0" value="0">
+            </div>
+
+            <div class="form-group full">
+              <label for="actividad-titulo">Título de la actividad</label>
+              <input
+                type="text"
+                id="actividad-titulo"
+                placeholder="Ej: Excursión por el centro"
+                required
+              >
+            </div>
+
+            <div class="form-group full">
+              <label for="actividad-lugar">Lugar</label>
+              <input
+                type="text"
+                id="actividad-lugar"
+                placeholder="Ej: Centro de Rosario"
+              >
+            </div>
+
+            <div class="form-group full">
+              <label for="actividad-descripcion">Descripción</label>
+              <textarea
+                id="actividad-descripcion"
+                placeholder="Escribí los detalles de la actividad..."
+              ></textarea>
+            </div>
+
+          </div>
+
+          <div class="form-actions">
+
+            <button
+              type="submit"
+              class="btn btn-primary"
+              id="btn-guardar-actividad"
+            >
+              Guardar actividad
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-ghost"
+              id="btn-cancelar-actividad"
+              onclick="cancelarEdicionActividad()"
+              style="display: none;"
+            >
+              Cancelar edición
+            </button>
+
+          </div>
+
+        </form>
+
+        <div id="estado-actividad" class="status-message"></div>
+
+      </div>
+
+    </section>
+
+
+    <section class="card editor-section">
+
+      <div class="card-header">
+        <span class="card-title">Actividades cargadas</span>
+      </div>
+
+      <div style="padding: 1.5rem;">
+        <div id="lista-actividades">
+          Cargando actividades...
+        </div>
+      </div>
+
+    </section>
+
+
+    <!-- ================================================= -->
+    <!-- TRASLADOS -->
+    <!-- ================================================= -->
+
+    <section class="card editor-section" id="seccion-traslados">
+
+      <div class="card-header">
+        <span class="card-title">🚐 Traslados</span>
+      </div>
+
+      <div style="padding: 1.5rem;">
+
+        <p>
+          Agregá los traslados que los viajeros deberán realizar durante el viaje.
+        </p>
+
+        <form id="traslado-form">
+
+          <input type="hidden" id="traslado-id">
+
+          <div class="form-grid">
+
+            <div class="form-group">
+              <label for="traslado-tipo">Medio de transporte</label>
+
+              <select id="traslado-tipo" required>
+                <option value="">Seleccionar transporte</option>
+                <option value="vuelo">✈️ Vuelo</option>
+                <option value="bus">🚌 Bus</option>
+                <option value="combi">🚐 Combi</option>
+                <option value="auto">🚗 Auto</option>
+                <option value="tren">🚆 Tren</option>
+                <option value="barco">🚢 Barco</option>
+                <option value="otro">Otro</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="traslado-fecha">Fecha</label>
+              <input type="date" id="traslado-fecha">
+            </div>
+
+            <div class="form-group">
+              <label for="traslado-hora">Hora</label>
+              <input type="time" id="traslado-hora">
+            </div>
+
+            <div class="form-group">
+              <label for="traslado-orden">Orden</label>
+              <input type="number" id="traslado-orden" min="0" value="0">
+            </div>
+
+            <div class="form-group">
+              <label for="traslado-origen">Origen</label>
+              <input
+                type="text"
+                id="traslado-origen"
+                placeholder="Ej: Terminal de Rosario"
+                required
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="traslado-destino">Destino</label>
+              <input
+                type="text"
+                id="traslado-destino"
+                placeholder="Ej: Hotel del centro"
+                required
+              >
+            </div>
+
+            <div class="form-group full">
+              <label for="traslado-detalle">Detalles</label>
+              <textarea
+                id="traslado-detalle"
+                placeholder="Información adicional del traslado..."
+              ></textarea>
+            </div>
+
+          </div>
+
+          <div class="form-actions">
+
+            <button
+              type="submit"
+              class="btn btn-primary"
+              id="btn-guardar-traslado"
+            >
+              Guardar traslado
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-ghost"
+              id="btn-cancelar-traslado"
+              onclick="cancelarEdicionTraslado()"
+              style="display: none;"
+            >
+              Cancelar edición
+            </button>
+
+          </div>
+
+        </form>
+
+        <div id="estado-traslado" class="status-message"></div>
+
+      </div>
+
+    </section>
+
+
+    <section class="card editor-section">
+
+      <div class="card-header">
+        <span class="card-title">Traslados cargados</span>
+      </div>
+
+      <div style="padding: 1.5rem;">
+        <div id="lista-traslados">
+          Cargando traslados...
+        </div>
+      </div>
+
+    </section>
+
+
+    <!-- ================================================= -->
+    <!-- AVISOS -->
+    <!-- ================================================= -->
+
+    <section class="card editor-section" id="seccion-avisos">
+
+      <div class="card-header">
+        <span class="card-title">📢 Avisos del viaje</span>
+      </div>
+
+      <div style="padding: 1.5rem;">
+
+        <p>
+          Publicá información importante que los viajeros podrán consultar desde su portal.
+        </p>
+
+        <form id="aviso-form">
+
+          <input type="hidden" id="aviso-id">
+
+          <div class="form-group">
+            <label for="aviso-mensaje">Mensaje del aviso</label>
+
+            <textarea
+              id="aviso-mensaje"
+              placeholder="Ej: Recuerden llevar el DNI y presentarse 30 minutos antes."
+              required
+            ></textarea>
+          </div>
+
+          <div class="form-actions">
+
+            <button
+              type="submit"
+              class="btn btn-primary"
+              id="btn-guardar-aviso"
+            >
+              Publicar aviso
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-ghost"
+              id="btn-cancelar-aviso"
+              onclick="cancelarEdicionAviso()"
+              style="display: none;"
+            >
+              Cancelar edición
+            </button>
+
+          </div>
+
+        </form>
+
+        <div id="estado-aviso" class="status-message"></div>
+
+      </div>
+
+    </section>
+
+
+    <section class="card editor-section">
+
+      <div class="card-header">
+        <span class="card-title">Avisos publicados</span>
+      </div>
+
+      <div style="padding: 1.5rem;">
+        <div id="lista-avisos">
+          Cargando avisos...
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================================================= -->
+    <!-- ARCHIVOS -->
+    <!-- ================================================= -->
+
+    <section class="card editor-section" id="seccion-archivos">
+
+      <div class="card-header">
+        <span class="card-title">📎 Archivos del viaje</span>
+      </div>
+
+      <div style="padding: 1.5rem;">
+
+        <p>
+          Subí imágenes y documentos públicos para que los viajeros puedan verlos desde el portal del viaje.
+        </p>
+
+        <form id="archivo-form">
+
+          <div class="file-upload-box">
+
+            <div class="form-grid">
+
+              <div class="form-group">
+                <label for="archivo-tipo">Tipo de archivo</label>
+                <select id="archivo-tipo" required>
+                  <option value="">Seleccionar tipo</option>
+                  <option value="imagen">🖼️ Imagen pública</option>
+                  <option value="documento">📄 Documento público</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="archivo-input">Seleccionar archivo</label>
+                <input
+                  type="file"
+                  id="archivo-input"
+                  accept="image/*,.pdf"
+                  required
+                >
+              </div>
+
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" id="btn-subir-archivo">
+                Subir archivo
+              </button>
+            </div>
+
+            <p class="file-meta">
+              Imágenes: JPG, PNG, WEBP y similares. Documentos: PDF, JPG o PNG.
+            </p>
+
+          </div>
+
+        </form>
+
+        <div id="estado-archivo" class="status-message"></div>
+
+      </div>
+
+    </section>
+
+    <section class="card editor-section">
+
+      <div class="card-header">
+        <span class="card-title">Archivos cargados</span>
+      </div>
+
+      <div style="padding: 1.5rem;">
+        <div id="lista-archivos">
+          Cargando archivos...
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- ================================================= -->
+  <!-- SCRIPTS -->
+  <!-- ================================================= -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../shared/config.js"></script>
+  <script src="../shared/supabaseClient.js"></script>
+  <script src="js/auth.js"></script>
+
+
+  <script>
+
+    let viajeId = null;
+
+    let actividadesActuales = [];
+    let trasladosActuales = [];
+    let avisosActuales = [];
+    let archivosActuales = [];
+
+
+    /* ================================================= */
+    /* FUNCIONES GENERALES */
+    /* ================================================= */
+
+    function volverAlDashboard() {
+      window.location.href = "dashboard.html";
+    }
+
+
+    function logout() {
+      if (typeof window.cerrarSesion === "function") {
+        window.cerrarSesion();
+      } else if (window.supabaseClient) {
+        window.supabaseClient.auth.signOut().then(() => {
+          window.location.href = "login.html";
+        });
+      }
+    }
+
+
+    function escaparHTML(texto) {
+      if (texto === null || texto === undefined) return "";
+
+      return String(texto)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+
+    function formatearFecha(fecha) {
+      if (!fecha) return "Fecha no definida";
+
+      const partes = fecha.split("-");
+
+      if (partes.length !== 3) return fecha;
+
+      return `${partes[2]}/${partes[1]}/${partes[0]}`;
+    }
+
+
+    function mostrarEstado(mensaje, tipo = "info") {
+      const elemento = document.getElementById("estado");
+
+      elemento.textContent = mensaje;
+      elemento.className = "alert alert-" + tipo;
+    }
+
+
+    function mostrarMensaje(id, mensaje, tipo = "info") {
+      const elemento = document.getElementById(id);
+
+      elemento.textContent = mensaje;
+      elemento.className = mensaje
+        ? "status-message alert alert-" + tipo
+        : "status-message";
+    }
+
+
+    /* ================================================= */
+    /* CARGAR VIAJE */
+    /* ================================================= */
+
+    async function cargarViaje() {
+
+      const parametros = new URLSearchParams(window.location.search);
+
+      viajeId = parametros.get("id");
+
+      if (!viajeId) {
+        mostrarEstado("No se recibió el ID del viaje.", "danger");
+        return false;
+      }
+
+      const { data, error } = await window.supabaseClient
+        .from("viajes")
+        .select("id, titulo, destino, codigo")
+        .eq("id", viajeId)
+        .single();
+
+      if (error) {
+        console.error(error);
+        mostrarEstado("No se pudo cargar el viaje.", "danger");
+        return false;
+      }
+
+      document.getElementById("viaje-info").textContent =
+        `${data.titulo} — ${data.destino} (${data.codigo})`;
+
+      mostrarEstado("Viaje cargado correctamente.", "success");
+
+      return true;
+    }
+
+
+    /* ================================================= */
+    /* ACTIVIDADES */
+    /* ================================================= */
+
+    async function cargarActividades() {
+
+      const contenedor = document.getElementById("lista-actividades");
+
+      contenedor.innerHTML = "Cargando actividades...";
+
+      const { data, error } = await window.supabaseClient
+        .from("actividades")
+        .select("*")
+        .eq("viaje_id", viajeId)
+        .order("dia", { ascending: true })
+        .order("orden", { ascending: true })
+        .order("hora", { ascending: true });
+
+      if (error) {
+        console.error(error);
+        contenedor.innerHTML =
+          '<div class="alert alert-danger">No se pudieron cargar las actividades.</div>';
+        return;
+      }
+
+      actividadesActuales = data || [];
+
+      renderizarActividades();
+    }
+
+
+    function renderizarActividades() {
+
+      const contenedor = document.getElementById("lista-actividades");
+
+      if (actividadesActuales.length === 0) {
+        contenedor.innerHTML = `
+          <div class="empty-state">
+            Todavía no hay actividades cargadas para este viaje.
+          </div>
+        `;
+        return;
+      }
+
+      contenedor.innerHTML = actividadesActuales.map(actividad => {
+
+        const fecha = actividad.fecha
+          ? formatearFecha(actividad.fecha)
+          : "Fecha no definida";
+
+        const hora = actividad.hora
+          ? actividad.hora.substring(0, 5)
+          : "Horario no definido";
+
+        return `
+          <article class="item">
+
+            <div class="item-header">
+
+              <div>
+                <h4>
+                  Día ${escaparHTML(actividad.dia)} —
+                  ${escaparHTML(actividad.titulo)}
+                </h4>
+
+                <div class="item-meta">
+                  📅 ${escaparHTML(fecha)}
+                  &nbsp; | &nbsp;
+                  🕒 ${escaparHTML(hora)}
+                  ${
+                    actividad.lugar
+                      ? `&nbsp; | &nbsp; 📍 ${escaparHTML(actividad.lugar)}`
+                      : ""
+                  }
+                </div>
+              </div>
+
+              <div class="item-actions">
+
+                <button
+                  class="btn btn-sm btn-ghost"
+                  onclick="editarActividad('${actividad.id}')"
+                >
+                  ✏️ Editar
+                </button>
+
+                <button
+                  class="btn btn-sm btn-danger"
+                  onclick="eliminarActividad('${actividad.id}')"
+                >
+                  🗑️ Eliminar
+                </button>
+
+              </div>
+
+            </div>
+
+            ${
+              actividad.descripcion
+                ? `<p class="item-description">${escaparHTML(actividad.descripcion)}</p>`
+                : ""
+            }
+
+          </article>
+        `;
+
+      }).join("");
+    }
+
+
+    function limpiarFormularioActividad() {
+
+      document.getElementById("actividad-form").reset();
+
+      document.getElementById("actividad-id").value = "";
+      document.getElementById("actividad-orden").value = "0";
+
+      document.getElementById("btn-guardar-actividad").textContent =
+        "Guardar actividad";
+
+      document.getElementById("btn-cancelar-actividad").style.display =
+        "none";
+    }
+
+
+    function cancelarEdicionActividad() {
+      limpiarFormularioActividad();
+      mostrarMensaje("estado-actividad", "");
+    }
+
+
+    async function guardarActividad(evento) {
+
+      evento.preventDefault();
+
+      const actividadId =
+        document.getElementById("actividad-id").value;
+
+      const actividad = {
+        viaje_id: viajeId,
+        dia: Number(document.getElementById("actividad-dia").value),
+        fecha: document.getElementById("actividad-fecha").value || null,
+        hora: document.getElementById("actividad-hora").value || null,
+        titulo: document.getElementById("actividad-titulo").value.trim(),
+        lugar:
+          document.getElementById("actividad-lugar").value.trim() || null,
+        descripcion:
+          document.getElementById("actividad-descripcion").value.trim() || null,
+        orden:
+          Number(document.getElementById("actividad-orden").value) || 0
+      };
+
+      if (!actividad.dia || !actividad.titulo) {
+        mostrarMensaje(
+          "estado-actividad",
+          "Completá el día y el título de la actividad.",
+          "danger"
+        );
+        return;
+      }
+
+      const boton = document.getElementById("btn-guardar-actividad");
+
+      boton.disabled = true;
+      boton.textContent = "Guardando...";
+
+      let resultado;
+
+      if (actividadId) {
+        resultado = await window.supabaseClient
+          .from("actividades")
+          .update(actividad)
+          .eq("id", actividadId);
+      } else {
+        resultado = await window.supabaseClient
+          .from("actividades")
+          .insert(actividad);
+      }
+
+      boton.disabled = false;
+
+      if (resultado.error) {
+        console.error(resultado.error);
+
+        boton.textContent = actividadId
+          ? "Guardar cambios"
+          : "Guardar actividad";
+
+        mostrarMensaje(
+          "estado-actividad",
+          "No se pudo guardar la actividad: " + resultado.error.message,
+          "danger"
+        );
+
+        return;
+      }
+
+      mostrarMensaje(
+        "estado-actividad",
+        actividadId
+          ? "Actividad actualizada correctamente."
+          : "Actividad creada correctamente.",
+        "success"
+      );
+
+      limpiarFormularioActividad();
+
+      await cargarActividades();
+    }
+
+
+    function editarActividad(id) {
+
+      const actividad = actividadesActuales.find(item => item.id === id);
+
+      if (!actividad) return;
+
+      document.getElementById("actividad-id").value = actividad.id;
+      document.getElementById("actividad-dia").value = actividad.dia || "";
+      document.getElementById("actividad-fecha").value = actividad.fecha || "";
+      document.getElementById("actividad-hora").value =
+        actividad.hora ? actividad.hora.substring(0, 5) : "";
+      document.getElementById("actividad-titulo").value =
+        actividad.titulo || "";
+      document.getElementById("actividad-lugar").value =
+        actividad.lugar || "";
+      document.getElementById("actividad-descripcion").value =
+        actividad.descripcion || "";
+      document.getElementById("actividad-orden").value =
+        actividad.orden || 0;
+
+      document.getElementById("btn-guardar-actividad").textContent =
+        "Guardar cambios";
+
+      document.getElementById("btn-cancelar-actividad").style.display =
+        "inline-block";
+
+      document.getElementById("actividad-form").scrollIntoView({
+        behavior: "smooth"
+      });
+    }
+
+
+    async function eliminarActividad(id) {
+
+      const actividad = actividadesActuales.find(item => item.id === id);
+
+      if (!actividad) return;
+
+      if (!confirm(`¿Querés eliminar la actividad "${actividad.titulo}"?`)) {
+        return;
+      }
+
+      const { error } = await window.supabaseClient
+        .from("actividades")
+        .delete()
+        .eq("id", id);
+
+      if (error) {
+        mostrarMensaje(
+          "estado-actividad",
+          "No se pudo eliminar la actividad: " + error.message,
+          "danger"
+        );
+        return;
+      }
+
+      mostrarMensaje(
+        "estado-actividad",
+        "Actividad eliminada correctamente.",
+        "success"
+      );
+
+      await cargarActividades();
+    }
+
+
+    /* ================================================= */
+    /* TRASLADOS */
+    /* ================================================= */
+
+    async function cargarTraslados() {
+
+      const contenedor = document.getElementById("lista-traslados");
+
+      contenedor.innerHTML = "Cargando traslados...";
+
+      const { data, error } = await window.supabaseClient
+        .from("traslados")
+        .select("*")
+        .eq("viaje_id", viajeId)
+        .order("orden", { ascending: true })
+        .order("fecha", { ascending: true })
+        .order("hora", { ascending: true });
+
+      if (error) {
+        console.error(error);
+
+        contenedor.innerHTML =
+          '<div class="alert alert-danger">No se pudieron cargar los traslados.</div>';
+
+        return;
+      }
+
+      trasladosActuales = data || [];
+
+      renderizarTraslados();
+    }
+
+
+    function renderizarTraslados() {
+
+      const contenedor = document.getElementById("lista-traslados");
+
+      if (trasladosActuales.length === 0) {
+        contenedor.innerHTML = `
+          <div class="empty-state">
+            Todavía no hay traslados cargados para este viaje.
+          </div>
+        `;
+        return;
+      }
+
+      const tipos = {
+        vuelo: "✈️ Vuelo",
+        bus: "🚌 Bus",
+        combi: "🚐 Combi",
+        auto: "🚗 Auto",
+        tren: "🚆 Tren",
+        barco: "🚢 Barco",
+        otro: "Otro"
+      };
+
+      contenedor.innerHTML = trasladosActuales.map(traslado => {
+
+        const fecha = traslado.fecha
+          ? formatearFecha(traslado.fecha)
+          : "Fecha no definida";
+
+        const hora = traslado.hora
+          ? traslado.hora.substring(0, 5)
+          : "Horario no definido";
+
+        const tipoTexto =
+          tipos[traslado.tipo] || traslado.tipo || "Traslado";
+
+        return `
+          <article class="item">
+
+            <div class="item-header">
+
+              <div>
+                <h4>${escaparHTML(tipoTexto)}</h4>
+
+                <div class="item-meta">
+                  📅 ${escaparHTML(fecha)}
+                  &nbsp; | &nbsp;
+                  🕒 ${escaparHTML(hora)}
+                </div>
+
+                <strong>Origen:</strong>
+                ${escaparHTML(traslado.origen)}
+
+                <br>
+
+                <strong>Destino:</strong>
+                ${escaparHTML(traslado.destino)}
+              </div>
+
+              <div class="item-actions">
+
+                <button
+                  class="btn btn-sm btn-ghost"
+                  onclick="editarTraslado('${traslado.id}')"
+                >
+                  ✏️ Editar
+                </button>
+
+                <button
+                  class="btn btn-sm btn-danger"
+                  onclick="eliminarTraslado('${traslado.id}')"
+                >
+                  🗑️ Eliminar
+                </button>
+
+              </div>
+
+            </div>
+
+            ${
+              traslado.detalle
+                ? `<p class="item-description">${escaparHTML(traslado.detalle)}</p>`
+                : ""
+            }
+
+          </article>
+        `;
+
+      }).join("");
+    }
+
+
+    function limpiarFormularioTraslado() {
+
+      document.getElementById("traslado-form").reset();
+
+      document.getElementById("traslado-id").value = "";
+      document.getElementById("traslado-orden").value = "0";
+
+      document.getElementById("btn-guardar-traslado").textContent =
+        "Guardar traslado";
+
+      document.getElementById("btn-cancelar-traslado").style.display =
+        "none";
+    }
+
+
+    function cancelarEdicionTraslado() {
+      limpiarFormularioTraslado();
+      mostrarMensaje("estado-traslado", "");
+    }
+
+
+    async function guardarTraslado(evento) {
+
+      evento.preventDefault();
+
+      const trasladoId =
+        document.getElementById("traslado-id").value;
+
+      const traslado = {
+        viaje_id: viajeId,
+        tipo: document.getElementById("traslado-tipo").value,
+        origen: document.getElementById("traslado-origen").value.trim(),
+        destino: document.getElementById("traslado-destino").value.trim(),
+        fecha: document.getElementById("traslado-fecha").value || null,
+        hora: document.getElementById("traslado-hora").value || null,
+        detalle:
+          document.getElementById("traslado-detalle").value.trim() || null,
+        orden:
+          Number(document.getElementById("traslado-orden").value) || 0
+      };
+
+      if (!traslado.tipo || !traslado.origen || !traslado.destino) {
+        mostrarMensaje(
+          "estado-traslado",
+          "Completá el transporte, el origen y el destino.",
+          "danger"
+        );
+        return;
+      }
+
+      const boton = document.getElementById("btn-guardar-traslado");
+
+      boton.disabled = true;
+      boton.textContent = "Guardando...";
+
+      let resultado;
+
+      if (trasladoId) {
+        resultado = await window.supabaseClient
+          .from("traslados")
+          .update(traslado)
+          .eq("id", trasladoId);
+      } else {
+        resultado = await window.supabaseClient
+          .from("traslados")
+          .insert(traslado);
+      }
+
+      boton.disabled = false;
+
+      if (resultado.error) {
+        console.error(resultado.error);
+
+        boton.textContent = trasladoId
+          ? "Guardar cambios"
+          : "Guardar traslado";
+
+        mostrarMensaje(
+          "estado-traslado",
+          "No se pudo guardar el traslado: " + resultado.error.message,
+          "danger"
+        );
+
+        return;
+      }
+
+      mostrarMensaje(
+        "estado-traslado",
+        trasladoId
+          ? "Traslado actualizado correctamente."
+          : "Traslado creado correctamente.",
+        "success"
+      );
+
+      limpiarFormularioTraslado();
+
+      await cargarTraslados();
+    }
+
+
+    function editarTraslado(id) {
+
+      const traslado = trasladosActuales.find(item => item.id === id);
+
+      if (!traslado) return;
+
+      document.getElementById("traslado-id").value = traslado.id;
+      document.getElementById("traslado-tipo").value = traslado.tipo || "";
+      document.getElementById("traslado-origen").value = traslado.origen || "";
+      document.getElementById("traslado-destino").value = traslado.destino || "";
+      document.getElementById("traslado-fecha").value = traslado.fecha || "";
+      document.getElementById("traslado-hora").value =
+        traslado.hora ? traslado.hora.substring(0, 5) : "";
+      document.getElementById("traslado-detalle").value =
+        traslado.detalle || "";
+      document.getElementById("traslado-orden").value =
+        traslado.orden || 0;
+
+      document.getElementById("btn-guardar-traslado").textContent =
+        "Guardar cambios";
+
+      document.getElementById("btn-cancelar-traslado").style.display =
+        "inline-block";
+
+      document.getElementById("traslado-form").scrollIntoView({
+        behavior: "smooth"
+      });
+    }
+
+
+    async function eliminarTraslado(id) {
+
+      const traslado = trasladosActuales.find(item => item.id === id);
+
+      if (!traslado) return;
+
+      if (!confirm(
+        `¿Querés eliminar el traslado "${traslado.origen} → ${traslado.destino}"?`
+      )) {
+        return;
+      }
+
+      const { error } = await window.supabaseClient
+        .from("traslados")
+        .delete()
+        .eq("id", id);
+
+      if (error) {
+        mostrarMensaje(
+          "estado-traslado",
+          "No se pudo eliminar el traslado: " + error.message,
+          "danger"
+        );
+        return;
+      }
+
+      mostrarMensaje(
+        "estado-traslado",
+        "Traslado eliminado correctamente.",
+        "success"
+      );
+
+      await cargarTraslados();
+    }
+
+
+    /* ================================================= */
+    /* AVISOS */
+    /* ================================================= */
+
+    async function cargarAvisos() {
+
+      const contenedor = document.getElementById("lista-avisos");
+
+      contenedor.innerHTML = "Cargando avisos...";
+
+      const { data, error } = await window.supabaseClient
+        .from("avisos")
+        .select("*")
+        .eq("viaje_id", viajeId)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error(error);
+
+        contenedor.innerHTML =
+          '<div class="alert alert-danger">No se pudieron cargar los avisos.</div>';
+
+        return;
+      }
+
+      avisosActuales = data || [];
+
+      renderizarAvisos();
+    }
+
+
+    function renderizarAvisos() {
+
+      const contenedor = document.getElementById("lista-avisos");
+
+      if (avisosActuales.length === 0) {
+        contenedor.innerHTML = `
+          <div class="empty-state">
+            Todavía no hay avisos publicados para este viaje.
+          </div>
+        `;
+        return;
+      }
+
+      contenedor.innerHTML = avisosActuales.map(aviso => {
+
+        const fechaCreacion = aviso.created_at
+          ? new Date(aviso.created_at).toLocaleString("es-AR")
+          : "";
+
+        return `
+          <article class="item">
+
+            <div class="item-header">
+
+              <div>
+                <h4>📢 Aviso</h4>
+
+                <div class="item-meta">
+                  Publicado: ${escaparHTML(fechaCreacion)}
+                </div>
+              </div>
+
+              <div class="item-actions">
+
+                <button
+                  class="btn btn-sm btn-ghost"
+                  onclick="editarAviso('${aviso.id}')"
+                >
+                  ✏️ Editar
+                </button>
+
+                <button
+                  class="btn btn-sm btn-danger"
+                  onclick="eliminarAviso('${aviso.id}')"
+                >
+                  🗑️ Eliminar
+                </button>
+
+              </div>
+
+            </div>
+
+            <p class="item-description">
+              ${escaparHTML(aviso.mensaje)}
+            </p>
+
+          </article>
+        `;
+
+      }).join("");
+    }
+
+
+    function limpiarFormularioAviso() {
+
+      document.getElementById("aviso-form").reset();
+
+      document.getElementById("aviso-id").value = "";
+
+      document.getElementById("btn-guardar-aviso").textContent =
+        "Publicar aviso";
+
+      document.getElementById("btn-cancelar-aviso").style.display =
+        "none";
+    }
+
+
+    function cancelarEdicionAviso() {
+      limpiarFormularioAviso();
+      mostrarMensaje("estado-aviso", "");
+    }
+
+
+    async function guardarAviso(evento) {
+
+      evento.preventDefault();
+
+      const avisoId = document.getElementById("aviso-id").value;
+
+      const mensaje = document
+        .getElementById("aviso-mensaje")
+        .value
+        .trim();
+
+      if (!mensaje) {
+        mostrarMensaje(
+          "estado-aviso",
+          "Escribí el mensaje del aviso.",
+          "danger"
+        );
+        return;
+      }
+
+      const boton = document.getElementById("btn-guardar-aviso");
+
+      boton.disabled = true;
+      boton.textContent = "Guardando...";
+
+      let resultado;
+
+      if (avisoId) {
+
+        resultado = await window.supabaseClient
+          .from("avisos")
+          .update({
+            mensaje: mensaje
+          })
+          .eq("id", avisoId);
+
+      } else {
+
+        resultado = await window.supabaseClient
+          .from("avisos")
+          .insert({
+            viaje_id: viajeId,
+            mensaje: mensaje
+          });
+
+      }
+
+      boton.disabled = false;
+
+      if (resultado.error) {
+        console.error(resultado.error);
+
+        boton.textContent = avisoId
+          ? "Guardar cambios"
+          : "Publicar aviso";
+
+        mostrarMensaje(
+          "estado-aviso",
+          "No se pudo guardar el aviso: " + resultado.error.message,
+          "danger"
+        );
+
+        return;
+      }
+
+      mostrarMensaje(
+        "estado-aviso",
+        avisoId
+          ? "Aviso actualizado correctamente."
+          : "Aviso publicado correctamente.",
+        "success"
+      );
+
+      limpiarFormularioAviso();
+
+      await cargarAvisos();
+      await cargarArchivos();
+    }
+
+
+    function editarAviso(id) {
+
+      const aviso = avisosActuales.find(item => item.id === id);
+
+      if (!aviso) return;
+
+      document.getElementById("aviso-id").value = aviso.id;
+      document.getElementById("aviso-mensaje").value = aviso.mensaje || "";
+
+      document.getElementById("btn-guardar-aviso").textContent =
+        "Guardar cambios";
+
+      document.getElementById("btn-cancelar-aviso").style.display =
+        "inline-block";
+
+      document.getElementById("aviso-form").scrollIntoView({
+        behavior: "smooth"
+      });
+    }
+
+
+    async function eliminarAviso(id) {
+
+      const aviso = avisosActuales.find(item => item.id === id);
+
+      if (!aviso) return;
+
+      if (!confirm("¿Querés eliminar este aviso?")) {
+        return;
+      }
+
+      const { error } = await window.supabaseClient
+        .from("avisos")
+        .delete()
+        .eq("id", id);
+
+      if (error) {
+        mostrarMensaje(
+          "estado-aviso",
+          "No se pudo eliminar el aviso: " + error.message,
+          "danger"
+        );
+        return;
+      }
+
+      mostrarMensaje(
+        "estado-aviso",
+        "Aviso eliminado correctamente.",
+        "success"
+      );
+
+      await cargarAvisos();
+      await cargarArchivos();
+    }
+
+
+
+    /* ================================================= */
+    /* ARCHIVOS Y STORAGE */
+    /* ================================================= */
+
+    function nombreArchivoSeguro(nombre) {
+      return nombre
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-zA-Z0-9._-]/g, "-")
+        .replace(/-+/g, "-");
+    }
+
+    function obtenerNombreBucket(tipoArchivo) {
+      return tipoArchivo === "imagen" ? "imagenes" : "documentos";
+    }
+
+    function obtenerTipoRegistro(archivo, tipoArchivo) {
+      return tipoArchivo === "imagen" ? "imagen" : "pdf";
+    }
+
+    function formatearTamano(bytes) {
+      if (!bytes) return "Tamaño desconocido";
+      if (bytes < 1024) return `${bytes} B`;
+      if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+      return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+    }
+
+    async function cargarArchivos() {
+      const contenedor = document.getElementById("lista-archivos");
+      contenedor.innerHTML = "Cargando archivos...";
+
+      const { data, error } = await window.supabaseClient
+        .from("archivos")
+        .select("*")
+        .eq("viaje_id", viajeId)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error(error);
+        contenedor.innerHTML =
+          '<div class="alert alert-danger">No se pudieron cargar los archivos.</div>';
+        return;
+      }
+
+      archivosActuales = data || [];
+      renderizarArchivos();
+    }
+
+    function renderizarArchivos() {
+      const contenedor = document.getElementById("lista-archivos");
+
+      if (archivosActuales.length === 0) {
+        contenedor.innerHTML = `
+          <div class="empty-state">
+            Todavía no hay archivos cargados para este viaje.
+          </div>
+        `;
+        return;
+      }
+
+      contenedor.innerHTML = `
+        <div class="file-list">
+          ${archivosActuales.map(archivo => {
+            const esImagen = archivo.tipo === "imagen";
+            const icono = esImagen ? "🖼️" : "📄";
+            const bucket = archivo.bucket || (archivo.es_privado ? "documentos" : "imagenes");
+
+            return `
+              <article class="file-card">
+                ${
+                  esImagen && !archivo.es_privado
+                    ? `<img
+                         class="file-preview"
+                         src="${obtenerUrlPublica(archivo)}"
+                         alt="${escaparHTML(archivo.nombre)}"
+                       >`
+                    : `<div class="file-preview" style="display:flex;align-items:center;justify-content:center;font-size:2rem;">${icono}</div>`
+                }
+
+                <div class="file-info">
+                  <div class="file-name">${escaparHTML(archivo.nombre)}</div>
+                  <div class="file-meta">
+                    ${icono} ${bucket} · ${archivo.es_privado ? "Privado" : "Público"}
+                  </div>
+                </div>
+
+                <div class="file-actions">
+                  <button
+                    class="btn btn-sm btn-ghost"
+                    onclick="abrirArchivo('${archivo.id}')"
+                  >
+                    ↗️ Abrir
+                  </button>
+
+                  <button
+                    class="btn btn-sm btn-danger"
+                    onclick="eliminarArchivo('${archivo.id}')"
+                  >
+                    🗑️ Eliminar
+                  </button>
+                </div>
+              </article>
+            `;
+          }).join("")}
+        </div>
+      `;
+    }
+
+    function obtenerUrlPublica(archivo) {
+      const bucket = archivo.bucket || "imagenes";
+      const { data } = window.supabaseClient.storage
+        .from(bucket)
+        .getPublicUrl(archivo.path_storage);
+
+      return data.publicUrl;
+    }
+
+    async function abrirArchivo(id) {
+      const archivo = archivosActuales.find(item => item.id === id);
+      if (!archivo) return;
+
+      const bucket = archivo.bucket || (archivo.es_privado ? "documentos" : "imagenes");
+      let url = "";
+
+      if (archivo.es_privado) {
+        const resultado = await window.supabaseClient.storage
+          .from(bucket)
+          .createSignedUrl(archivo.path_storage, 3600);
+
+        if (resultado.error) {
+          console.error(resultado.error);
+          mostrarMensaje(
+            "estado-archivo",
+            "No se pudo generar el enlace al documento: " + resultado.error.message,
+            "danger"
+          );
+          return;
+        }
+
+        url = resultado.data.signedUrl;
+      } else {
+        url = obtenerUrlPublica(archivo);
+      }
+
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+
+    async function guardarArchivo(evento) {
+      evento.preventDefault();
+
+      const tipoArchivo = document.getElementById("archivo-tipo").value;
+      const input = document.getElementById("archivo-input");
+      const archivo = input.files[0];
+
+      if (!tipoArchivo || !archivo) {
+        mostrarMensaje(
+          "estado-archivo",
+          "Seleccioná el tipo y el archivo que querés subir.",
+          "danger"
+        );
+        return;
+      }
+
+      const esImagen = archivo.type.startsWith("image/");
+      const esPdf = archivo.type === "application/pdf";
+
+      if (tipoArchivo === "imagen" && !esImagen) {
+        mostrarMensaje(
+          "estado-archivo",
+          "Para una imagen pública tenés que seleccionar un archivo de imagen.",
+          "danger"
+        );
+        return;
+      }
+
+      if (tipoArchivo === "documento" && !esImagen && !esPdf) {
+        mostrarMensaje(
+          "estado-archivo",
+          "Los documentos admitidos son PDF, JPG, PNG o imágenes compatibles.",
+          "danger"
+        );
+        return;
+      }
+
+      const boton = document.getElementById("btn-subir-archivo");
+      boton.disabled = true;
+      boton.textContent = "Subiendo...";
+
+      try {
+        const bucket = obtenerNombreBucket(tipoArchivo);
+        const nombre = nombreArchivoSeguro(archivo.name);
+        const path = `${viajeId}/${Date.now()}-${crypto.randomUUID()}-${nombre}`;
+        // Los documentos se guardan como públicos para que los viajeros puedan abrirlos
+        // desde el portal sin iniciar sesión.
+        const esPrivado = false;
+        const tipoRegistro = obtenerTipoRegistro(archivo, tipoArchivo);
+
+        const subida = await window.supabaseClient.storage
+          .from(bucket)
+          .upload(path, archivo, {
+            cacheControl: "3600",
+            upsert: false,
+            contentType: archivo.type || undefined
+          });
+
+        if (subida.error) {
+          throw subida.error;
+        }
+
+        const registro = await window.supabaseClient
+          .from("archivos")
+          .insert({
+            viaje_id: viajeId,
+            tipo: tipoRegistro,
+            nombre: archivo.name,
+            path_storage: path,
+            bucket: bucket,
+            es_privado: esPrivado,
+            orden: 0
+          });
+
+        if (registro.error) {
+          await window.supabaseClient.storage.from(bucket).remove([path]);
+          throw registro.error;
+        }
+
+        mostrarMensaje(
+          "estado-archivo",
+          "Archivo subido correctamente.",
+          "success"
+        );
+
+        document.getElementById("archivo-form").reset();
+        await cargarArchivos();
+
+      } catch (error) {
+        console.error(error);
+        mostrarMensaje(
+          "estado-archivo",
+          "No se pudo subir el archivo: " + error.message,
+          "danger"
+        );
+      } finally {
+        boton.disabled = false;
+        boton.textContent = "Subir archivo";
+      }
+    }
+
+    async function eliminarArchivo(id) {
+      const archivo = archivosActuales.find(item => item.id === id);
+      if (!archivo) return;
+
+      if (!confirm(`¿Querés eliminar el archivo "${archivo.nombre}"?`)) {
+        return;
+      }
+
+      const bucket = archivo.bucket || (archivo.es_privado ? "documentos" : "imagenes");
+
+      const borradoStorage = await window.supabaseClient.storage
+        .from(bucket)
+        .remove([archivo.path_storage]);
+
+      if (borradoStorage.error) {
+        mostrarMensaje(
+          "estado-archivo",
+          "No se pudo eliminar el archivo del almacenamiento: " +
+            borradoStorage.error.message,
+          "danger"
+        );
+        return;
+      }
+
+      const borradoRegistro = await window.supabaseClient
+        .from("archivos")
+        .delete()
+        .eq("id", id);
+
+      if (borradoRegistro.error) {
+        mostrarMensaje(
+          "estado-archivo",
+          "El archivo se quitó del almacenamiento, pero no de la base de datos: " +
+            borradoRegistro.error.message,
+          "danger"
+        );
+        return;
+      }
+
+      mostrarMensaje(
+        "estado-archivo",
+        "Archivo eliminado correctamente.",
+        "success"
+      );
+
+      await cargarArchivos();
+    }
+
+
+    /* ================================================= */
+    /* INICIO */
+    /* ================================================= */
+
+    async function iniciarEditor() {
+
+      const viajeCargado = await cargarViaje();
+
+      if (!viajeCargado) return;
+
+      await cargarActividades();
+      await cargarTraslados();
+      await cargarAvisos();
+      await cargarArchivos();
+    }
+
+
+    document
+      .getElementById("actividad-form")
+      .addEventListener("submit", guardarActividad);
+
+    document
+      .getElementById("traslado-form")
+      .addEventListener("submit", guardarTraslado);
+
+    document
+      .getElementById("aviso-form")
+      .addEventListener("submit", guardarAviso);
+
+    document
+      .getElementById("archivo-form")
+      .addEventListener("submit", guardarArchivo);
+
+    // Navegación suave entre las secciones del editor.
+    document.querySelectorAll(".section-jump a").forEach(enlace => {
+      enlace.addEventListener("click", () => {
+        document.querySelectorAll(".section-jump a").forEach(item => item.removeAttribute("aria-current"));
+        enlace.setAttribute("aria-current", "page");
+      });
+    });
+
+    iniciarEditor();
+
+  </script>
+
+</body>
+</html>
