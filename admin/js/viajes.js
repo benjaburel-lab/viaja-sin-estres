@@ -173,7 +173,14 @@ async function regenerarCodigo() {
 // ─── Links públicos ──────────────────────────────────────────
 
 function generarLink(codigo) {
-  return `${SITE_URL}/viaje/?c=${encodeURIComponent(codigo)}`;
+  const rutaActual = window.location.pathname || '';
+  const indiceAdmin = rutaActual.indexOf('/admin/');
+  const baseRepositorio =
+    indiceAdmin >= 0 ? rutaActual.slice(0, indiceAdmin) : '';
+
+  const basePublica = `${window.location.origin}${baseRepositorio}`;
+
+  return `${basePublica}/viaje/?c=${encodeURIComponent(codigo)}`;
 }
 
 function abrirViaje(codigo) {
