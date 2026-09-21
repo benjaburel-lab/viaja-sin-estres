@@ -826,19 +826,26 @@
   }
 </style>
 
-<style id="animaciones-scroll-viaja">
-  /* Animaciones de entrada al desplazarse por la página */
+
+
+<style id="animaciones-scroll-seguras">
+  /* Las secciones visibles nunca se ocultan al cargar: evita el pantallazo blanco. */
   .reveal-on-scroll {
+    opacity: 1;
+    transform: none;
+  }
+  .reveal-on-scroll.reveal-pending {
     opacity: 0;
     transform: translateY(28px);
     transition: opacity .7s ease, transform .7s ease;
   }
-  .reveal-on-scroll.is-visible {
+  .reveal-on-scroll.reveal-pending.is-visible {
     opacity: 1;
     transform: translateY(0);
   }
   @media (prefers-reduced-motion: reduce) {
-    .reveal-on-scroll, .reveal-on-scroll.is-visible {
+    .reveal-on-scroll.reveal-pending,
+    .reveal-on-scroll.reveal-pending.is-visible {
       opacity: 1;
       transform: none;
       transition: none;
@@ -1088,14 +1095,21 @@
 
     document.getElementById("currentYear").textContent = new Date().getFullYear();
 
-    // Animaciones suaves al entrar en pantalla.
+    // Animaciones al desplazarse, sin ocultar elementos que ya están visibles.
     (function () {
       const elementos = document.querySelectorAll(
         "main section, .service-card, .step-card, .benefit-card, .cta-content"
       );
-
-      elementos.forEach((elemento) => elemento.classList.add("reveal-on-scroll"));
-
+      const pendientes = [];
+      elementos.forEach((elemento) => {
+        const rect = elemento.getBoundingClientRect();
+        if (rect.top > window.innerHeight) {
+          elemento.classList.add("reveal-on-scroll", "reveal-pending");
+          pendientes.push(elemento);
+        } else {
+          elemento.classList.add("reveal-on-scroll");
+        }
+      });
       if ("IntersectionObserver" in window) {
         const observador = new IntersectionObserver((entradas, observer) => {
           entradas.forEach((entrada) => {
@@ -1105,10 +1119,9 @@
             }
           });
         }, { threshold: 0.12 });
-
-        elementos.forEach((elemento) => observador.observe(elemento));
+        pendientes.forEach((elemento) => observador.observe(elemento));
       } else {
-        elementos.forEach((elemento) => elemento.classList.add("is-visible"));
+        pendientes.forEach((elemento) => elemento.classList.add("is-visible"));
       }
     })();
 
