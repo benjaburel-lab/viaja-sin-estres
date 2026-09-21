@@ -1366,3 +1366,44 @@ body {
   pointer-events: auto !important;
   user-select: text !important;
 }
+/* Corrección del desplazamiento del modal */
+.modal-overlay {
+    overflow-y: auto !important;
+    padding: 24px 16px !important;
+    align-items: flex-start !important;
+}
+
+.modal {
+    width: min(100%, 620px) !important;
+    max-height: calc(100vh - 48px) !important;
+    margin: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.modal-header {
+    flex-shrink: 0 !important;
+}
+
+.modal-body {
+    overflow-y: auto !important;
+    min-height: 0 !important;
+}
+
+.modal-footer {
+    flex-shrink: 0 !important;
+    position: sticky !important;
+    bottom: 0 !important;
+    background: #ffffff !important;
+    z-index: 5 !important;
+}
+
+@media (max-width: 600px) {
+    .modal-overlay {
+        padding: 12px !important;
+    }
+
+    .modal {
+        max-height: calc(100vh - 24px) !important;
+    }
+}
