@@ -1407,3 +1407,113 @@ body {
         max-height: calc(100vh - 24px) !important;
     }
 }
+/* =========================================================
+   AJUSTES DEL MODAL QR Y BOTONES DE ACCIONES
+   ========================================================= */
+
+/* Modal QR completo y adaptable a la pantalla */
+#qr-overlay {
+  align-items: flex-start !important;
+  overflow-y: auto !important;
+  padding: 16px !important;
+}
+
+#qr-overlay .qr-modal {
+  display: flex !important;
+  flex-direction: column !important;
+  width: min(100%, 440px) !important;
+  max-height: calc(100vh - 32px) !important;
+  margin: auto !important;
+  overflow: hidden !important;
+}
+
+#qr-overlay .modal-header {
+  flex-shrink: 0 !important;
+}
+
+#qr-overlay .qr-content {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  padding: 16px !important;
+}
+
+#qr-overlay .qr-actions {
+  display: flex !important;
+  justify-content: center !important;
+  flex-wrap: wrap !important;
+  gap: 12px !important;
+  padding-bottom: 4px !important;
+}
+
+/* Bordes visibles en todos los botones grises de acciones */
+.tabla-viajes .btn.btn-ghost {
+  border: 1px solid #d5e0ea !important;
+  background: #ffffff !important;
+  color: #36566f !important;
+  box-shadow: none !important;
+}
+
+.tabla-viajes .btn.btn-ghost:hover {
+  background: #f0f7fc !important;
+  border-color: #9db8cc !important;
+}
+
+/* Mantener el borde rojo del botón eliminar */
+.tabla-viajes .btn.btn-danger {
+  border: 1px solid var(--color-danger) !important;
+}
+/* =========================================================
+   BOTONES DE ACCIONES — ESTILO UNIFICADO
+   ========================================================= */
+
+.tabla-viajes .btn {
+  background: linear-gradient(135deg, #0789d1, #08a7c7) !important;
+  color: #ffffff !important;
+  border: 1px solid #0789d1 !important;
+  box-shadow: none !important;
+}
+
+.tabla-viajes .btn:hover {
+  background: linear-gradient(135deg, #067bbd, #0795b0) !important;
+  border-color: #067bbd !important;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+}
+
+/* Eliminar permanece rojo */
+.tabla-viajes .btn.btn-danger {
+  background: #ffffff !important;
+  color: #dc3545 !important;
+  border: 1px solid #dc3545 !important;
+}
+
+.tabla-viajes .btn.btn-danger:hover {
+  background: #dc3545 !important;
+  color: #ffffff !important;
+}
+/* BOTONES DE ACCIONES DEL LISTADO */
+.td-actions .btn.btn-sm {
+  background: linear-gradient(135deg, #0789d1, #08a7c7) !important;
+  color: #fff !important;
+  border: 1px solid #0789d1 !important;
+  box-shadow: none !important;
+}
+
+.td-actions .btn.btn-sm:hover {
+  background: linear-gradient(135deg, #067bbd, #0795b0) !important;
+  border-color: #067bbd !important;
+  color: #fff !important;
+}
+
+/* ELIMINAR: se mantiene rojo */
+.td-actions .btn.btn-danger.btn-sm {
+  background: #fff !important;
+  color: #dc3545 !important;
+  border: 1px solid #dc3545 !important;
+}
+
+.td-actions .btn.btn-danger.btn-sm:hover {
+  background: #dc3545 !important;
+  color: #fff !important;
+}
