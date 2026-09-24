@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mi viaje | Viaja Sin Estrés</title>
-  <meta name="description" content="Consultá toda la información de tu viaje con Viaja Sin Estrés.">
+  <title>Mi viaje | Viajar Sin Estrés</title>
+  <meta name="description" content="Consultá toda la información de tu viaje con Viajar Sin Estrés.">
   <link rel="stylesheet" href="../shared/css/global.css">
 <link rel="icon" href="../assets/favicon-viaja-sin-estres.svg" type="image/svg+xml">
   <style>
@@ -326,13 +326,16 @@
       }
     }
   </style>
+<style>
+.footer-legal{display:flex;flex-wrap:wrap;gap:14px}.footer-legal a{color:rgba(255,255,255,.82);text-decoration:none}.footer-legal a:hover{color:#fff}@media(max-width:650px){.footer-legal{gap:10px}}
+</style>
 </head>
 
 <body>
   <header class="topbar">
     <div class="container topbar-inner">
-      <a href="../index.html" aria-label="Volver a Viaja Sin Estrés">
-        <img class="logo" src="../assets/logo-viaja-sin-estres.png" alt="Viaja Sin Estrés">
+      <a href="../index.html" aria-label="Volver a Viajar Sin Estrés">
+        <img class="logo" src="../assets/logo-viaja-sin-estres.png" alt="Viajar Sin Estrés">
       </a>
       <a class="back-link" href="../index.html">← Página principal</a>
     </div>
@@ -401,8 +404,15 @@
 
   <footer class="footer">
     <div class="container footer-inner">
-      <strong>Viaja Sin Estrés</strong>
-      <small>Tu información de viaje, siempre a mano.</small>
+      <div>
+        <strong>Viajar Sin Estrés</strong><br>
+        <small>Tu información de viaje, siempre a mano.</small>
+      </div>
+      <div class="footer-legal">
+        <a href="../privacidad.html">Privacidad</a>
+        <a href="../terminos.html">Términos</a>
+        <a href="mailto:mauro_yakas_97@hotmail.com">Contacto</a>
+      </div>
     </div>
   </footer>
 
@@ -471,14 +481,14 @@
 
     async function buildFileUrl(item) {
       const client = window.supabaseClient || window.supabase || window._supabase;
-      const bucket = item.bucket || "";
       const path = item.path_storage || item.path || "";
+      // Si el registro no trae bucket, inferimos el bucket por el tipo de archivo.
+      // Las imágenes son públicas; los documentos SIEMPRE se sirven con URL firmada.
+      const bucket = item.bucket || ((item.tipo === "imagen") ? "imagenes" : "documentos");
 
       if (!client || !bucket || !path) return "";
 
-      // Los buckets "imagenes" y "documentos" están configurados como públicos.
-      // Por eso usamos directamente su URL pública para ambos tipos de archivo.
-      if (bucket === "imagenes" || bucket === "documentos" || item.es_privado === false) {
+      if (bucket === "imagenes") {
         const { data } = client.storage.from(bucket).getPublicUrl(path);
         return data?.publicUrl || "";
       }
@@ -488,7 +498,7 @@
         .createSignedUrl(path, 3600);
 
       if (error) {
-        console.error("No se pudo generar la URL del archivo:", error);
+        console.error("No se pudo generar la URL temporal del archivo:", error);
         return "";
       }
 
@@ -514,8 +524,11 @@
           if (url) {
             output += `
               <div class="public-image-card">
-                <img src="${escapeHtml(url)}" alt="${escapeHtml(item.nombre || "Imagen del viaje")}">
+                <a class="public-image-link" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" aria-label="Abrir ${escapeHtml(item.nombre || "Imagen del viaje")}">
+                  <img src="${escapeHtml(url)}" alt="${escapeHtml(item.nombre || "Imagen del viaje")}">
+                </a>
                 <p>${escapeHtml(item.nombre || "Imagen del viaje")}</p>
+                <a class="file-link" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Abrir imagen ↗</a>
               </div>
             `;
           }
